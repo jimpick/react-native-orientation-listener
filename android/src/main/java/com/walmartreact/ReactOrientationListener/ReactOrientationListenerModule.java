@@ -15,6 +15,8 @@ import android.content.Context;
 import android.hardware.SensorManager;
 import android.view.OrientationEventListener;
 import android.os.Build;
+import android.content.res.Configuration;
+// import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,11 +39,14 @@ public class ReactOrientationListenerModule extends ReactContextBaseJavaModule {
         WritableNativeMap params = new WritableNativeMap();
         String orientationValue = "";
         if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
-        if (orientation < 45 || orientation > 315 || (orientation > 135 && orientation < 225)) {
+        int configOrientation = thisContext.getResources().getConfiguration().orientation;
+        // Log.i("Jim", "" + configOrientation);
+        if (configOrientation == Configuration.ORIENTATION_PORTRAIT) {
           orientationValue = "PORTRAIT";
-        } else {
+        } else if (configOrientation == Configuration.ORIENTATION_LANDSCAPE){
           orientationValue = "LANDSCAPE";
         }
+        if (orientationValue.equals("")) return;
         if (orientationValue.equals(lastOrientationValue)) return;
         params.putString("orientation", orientationValue);
         params.putString("device", getDeviceName());
