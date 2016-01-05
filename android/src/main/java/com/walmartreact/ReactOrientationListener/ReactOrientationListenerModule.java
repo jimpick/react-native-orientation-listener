@@ -37,19 +37,19 @@ public class ReactOrientationListenerModule extends ReactContextBaseJavaModule {
         WritableNativeMap params = new WritableNativeMap();
         String orientationValue = "";
         if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
-        if (orientation < 45 || orientation > 315) {
+        if (orientation < 45 || orientation > 315 || (orientation > 135 && orientation < 225)) {
           orientationValue = "PORTRAIT";
         } else {
           orientationValue = "LANDSCAPE";
         }
         if (orientationValue.equals(lastOrientationValue)) return;
-        lastOrientationValue = orientationValue;
         params.putString("orientation", orientationValue);
         params.putString("device", getDeviceName());
         if (thisContext.hasActiveCatalystInstance()) {
           thisContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit("orientationDidChange", params);
+          lastOrientationValue = orientationValue;
         }
       }
     };
